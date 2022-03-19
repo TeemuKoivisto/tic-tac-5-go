@@ -117,7 +117,7 @@ func (g *GameState) getCellAt(x int, y int) GridCell {
 }
 
 func (g *GameState) getAdjacentInDirection(x int, y int, dir Adjacency, topSide bool) (GridCell, error) {
-	if (!g.isWithinGrid(x, y)) {
+	if !g.isWithinGrid(x, y) {
 		return GridCell{}, errors.New("x,y values were not inside the grid")
 	}
 	switch dir {
@@ -166,7 +166,7 @@ func (g *GameState) getAdjacentCells(x int, y int, player PlayerSymbol, dir Adja
 			adjacent = append(adjacent, cell)
 			nowX = cell.X
 			nowY = cell.Y
-		} else if (topSide) {
+		} else if topSide {
 			cell = g.getCellAt(x, y)
 			topSide = false
 			nowX = x

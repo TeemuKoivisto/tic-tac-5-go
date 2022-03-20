@@ -59,12 +59,24 @@ func (t *TicTacToe) AddPlayer(playerType PlayerType, user string) (*Player, erro
 	return &player, nil
 }
 
+func (t *TicTacToe) getAIPlayer() (*Player, error) {
+	if t.State.Opts.GameType != LOCAL_AI {
+		return nil, errors.New("game wasn't a local AI game")
+	}
+	if xPlayer, ok := t.Players[X]; ok && xPlayer.Type == AI {
+		return &xPlayer, nil
+	} else if oPlayer, ok := t.Players[O]; ok && oPlayer.Type == AI {
+		return &oPlayer, nil
+	}
+	return nil, errors.New("there was no AI players")
+}
+
 func (t *TicTacToe) HandlePlayerTurn(move Move) (*GameState, error) {
 	if t.State.Status != X_TURN && t.State.Status != O_TURN {
 		return nil, errors.New("game has already ended")
 	} else if !t.State.isWithinGrid(move.X, move.Y) {
 		return nil, errors.New("x, y wasn't inside the grid")
-  }
+	}
 	current := t.State.getCellAt(move.X, move.Y)
 	if current.Owner == EMPTY {
 		current.Owner = move.Player

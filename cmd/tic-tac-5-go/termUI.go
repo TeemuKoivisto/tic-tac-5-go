@@ -11,15 +11,31 @@ func Play() {
 	game := NewGame(GameOptions{
 		GridSize: 5,
 	})
-	game.AddPlayer(HUMAN, "a")
-	game.AddPlayer(HUMAN, "b")
+	game.AddPlayer(HUMAN, "human 1")
+	// game.AddPlayer(HUMAN, "human 2")
+	game.AddPlayer(AI, "computer")
 	game.StartGame()
+	ai := &LocalAI{
+		opts: AIOptions{
+			scanDepth: 2,
+		},
+		symbol: O,
+		turn:   0,
+		scores: make(map[string]ScoreBoard),
+	}
 	running := true
 	for running {
 		PrintGrid(game)
-		x, y, err := PromptMove()
+		var x, y int
+		var err error
+		if game.State.Status == X_TURN {
+			x, y, err = PromptMove()
+		} else {
+			x, y, err = ai.getAIMove(&game.State)
+			fmt.Printf("AI move (x: %d y: %d)\n", x, y)
+		}
 		if err != nil {
-			fmt.Println("PromptMove error", err)
+			fmt.Println("error", err)
 			continue
 		}
 		var player PlayerSymbol
@@ -69,6 +85,7 @@ func PrintGrid(t *TicTacToe) {
 }
 
 func PromptMove() (int, int, error) {
+	// return 1, 1, nil
 	var readX, readY int
 	fmt.Println("Enter x,y coordinates separated by space (eg 0 1): ")
 	_, err := fmt.Scanf("%d %d", &readX, &readY)

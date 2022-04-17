@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/TeemuKoivisto/tic-tac-5-go/cmd/tic-tac-5-go"
+	"github.com/TeemuKoivisto/tic-tac-5-go/game"
 )
 
 func main() {
-	ticTacToe.Play()
+	game.Play()
 }

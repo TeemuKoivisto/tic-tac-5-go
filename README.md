@@ -1,4 +1,4 @@
-# tic-tac-5-go
+# [tic-tac-5-go](https://github.com/TeemuKoivisto/tic-tac-5-go)
 
 Tic-tac-toe written in Go in which the goal is to get 5 in a row.
 

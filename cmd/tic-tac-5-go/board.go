@@ -20,7 +20,7 @@ type Board struct {
 
 func (b *Board) New(x int, y int, player PlayerSymbol) *Board {
 	cells := copy(b.size, b.cells)
-	cells[x*b.size+y].owner = player
+	cells[y*b.size+x].owner = player
 	newBoard := Board{
 		size:   b.size,
 		status: b.status,

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
+func TestNewBoard(t *testing.T) {
 	size := 25
 	board := newBoard(size)
 	count := 0

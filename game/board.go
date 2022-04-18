@@ -73,9 +73,9 @@ func createCells(size int) *[]BoardCell {
 	for y := 0; y < size; y++ {
 		for x := 0; x < size; x++ {
 			cells[y*size+x] = BoardCell{
-				x:     x,
-				y:     y,
-				owner: EMPTY,
+				x:         x,
+				y:         y,
+				owner:     EMPTY,
 				adjacency: map[Adjacency]int{},
 			}
 		}

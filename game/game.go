@@ -7,14 +7,21 @@ import (
 
 type PlayerType int
 
+const MaxPlayers = 2
+
 const (
 	HUMAN PlayerType = iota
 	AI
 )
 
+type User struct {
+	ID   string
+	name string
+}
+
 type Player struct {
+	User            User
 	Type            PlayerType
-	User            string
 	Symbol          PlayerSymbol
 	AcceptedRematch bool
 }
@@ -26,59 +33,52 @@ type GameOptions struct {
 }
 
 type TicTacToe struct {
-	ID         string
-	Opts       GameOptions
-	State      GameState
-	Players    map[PlayerSymbol]Player
-	MaxPlayers int
+	ID      string
+	Opts    GameOptions
+	State   GameState
+	XPlayer *Player
+	OPlayer *Player
 }
 
 func New(opts GameOptions) *TicTacToe {
 	return &TicTacToe{
-		ID:         "unique-id",
-		Opts:       opts,
-		State:      GameState{},
-		Players:    map[PlayerSymbol]Player{},
-		MaxPlayers: 2,
+		ID:    "unique-id",
+		Opts:  opts,
+		State: GameState{},
 	}
 }
 
-func (t *TicTacToe) AddPlayer(playerType PlayerType, user string) (*Player, error) {
-	if len(t.Players) == t.MaxPlayers {
+func (t *TicTacToe) isFull() bool {
+	return t.XPlayer != nil && t.OPlayer != nil
+}
+
+func (t *TicTacToe) isRunning() bool {
+	return t.State.Status == X_TURN || t.State.Status == O_TURN
+}
+
+func (t *TicTacToe) AddPlayer(playerType PlayerType, user User) (*Player, error) {
+	if t.isFull() {
 		return nil, errors.New("game already full")
 	}
-	var player = Player{}
-	if _, ok := t.Players[X]; !ok {
-		player = Player{
+	var player *Player
+	if t.XPlayer == nil {
+		player = &Player{
+			User:            user,
+			Type:            playerType,
 			Symbol:          X,
-			Type:            playerType,
-			User:            user,
 			AcceptedRematch: false,
 		}
-	} else if _, ok := t.Players[O]; !ok {
-		player = Player{
-			Symbol:          O,
-			Type:            playerType,
-			User:            user,
-			AcceptedRematch: false,
-		}
+		t.XPlayer = player
 	} else {
-		return nil, errors.New("game not full but has no available slots")
+		player = &Player{
+			User:            user,
+			Type:            playerType,
+			Symbol:          O,
+			AcceptedRematch: false,
+		}
+		t.OPlayer = player
 	}
-	t.Players[player.Symbol] = player
-	return &player, nil
-}
-
-func (t *TicTacToe) getAIPlayer() (*Player, error) {
-	if t.Opts.GameType != LOCAL_AI {
-		return nil, errors.New("game wasn't a local AI game")
-	}
-	if xPlayer, ok := t.Players[X]; ok && xPlayer.Type == AI {
-		return &xPlayer, nil
-	} else if oPlayer, ok := t.Players[O]; ok && oPlayer.Type == AI {
-		return &oPlayer, nil
-	}
-	return nil, errors.New("there was no AI players")
+	return player, nil
 }
 
 func (t *TicTacToe) HandlePlayerTurn(move Move) error {
@@ -99,13 +99,15 @@ func (t *TicTacToe) HandlePlayerTurn(move Move) error {
 	return t.State.updateGameStatus(move)
 }
 
-func (t *TicTacToe) StartGame() *TicTacToe {
+func (t *TicTacToe) StartGame() error {
+	if !t.isFull() {
+		return errors.New("game is not full")
+	}
 	t.State = *newState(t.Opts.Size)
 	t.State.Status = X_TURN
-	return t
+	return nil
 }
 
-func (t *TicTacToe) EndGame() *TicTacToe {
+func (t *TicTacToe) EndGame() {
 	t.State.Status = TIE
-	return t
 }

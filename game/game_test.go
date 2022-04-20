@@ -4,6 +4,42 @@ import (
 	"testing"
 )
 
+func TestAddingPlayers(t *testing.T) {
+	size := 25
+	game := New(GameOptions{
+		Size:         size,
+		PlayerSymbol: X,
+		GameType:     HOT_SEAT,
+	})
+	var startErr, addErr error
+	startErr = game.StartGame()
+	if startErr == nil {
+		t.Error("Was able to start unready game without players")
+	}
+	_, addErr = game.AddPlayer(HUMAN, User{ID: "1", name: "Player 1"})
+	if addErr != nil {
+		t.Error("Failed to add X player")
+	}
+	startErr = game.StartGame()
+	if startErr == nil {
+		t.Error("Was able to start unready with only X player")
+	}
+	_, addErr = game.AddPlayer(HUMAN, User{ID: "2", name: "Player 2"})
+	if addErr != nil {
+		t.Error("Failed to add O player")
+	}
+	startErr = game.StartGame()
+	if startErr != nil {
+		t.Error("Was not able to start game with full players")
+	} else if !game.isRunning() {
+		t.Error("Started game but it was not set running")
+	}
+	game.EndGame()
+	if game.isRunning() {
+		t.Error("Ended game but it was still shown running")
+	}
+}
+
 func TestNewGame(t *testing.T) {
 	size := 25
 	game := New(GameOptions{
@@ -11,8 +47,8 @@ func TestNewGame(t *testing.T) {
 		PlayerSymbol: X,
 		GameType:     HOT_SEAT,
 	})
-	game.AddPlayer(HUMAN, "Player 1")
-	game.AddPlayer(HUMAN, "Player 2")
+	game.AddPlayer(HUMAN, User{ID: "1", name: "Player 1"})
+	game.AddPlayer(HUMAN, User{ID: "2", name: "Player 2"})
 	game.StartGame()
 
 	moves := []Move{
@@ -36,11 +72,11 @@ func TestNewGame(t *testing.T) {
 		switch i {
 		case 0, 2, 3, 4, 5, 7, 9, 12:
 			if game.State.Status != X_TURN {
-				t.Errorf("For move %v at index %d wasn't X's turn", move, i)
+				t.Errorf("Move %v at index %d wasn't on X's turn", move, i)
 			}
 		case 1, 6, 8, 10:
 			if game.State.Status != O_TURN {
-				t.Errorf("For move %v at index %d wasn't O's turn", move, i)
+				t.Errorf("Move %v at index %d wasn't on O's turn", move, i)
 			}
 		}
 		game.HandlePlayerTurn(move)

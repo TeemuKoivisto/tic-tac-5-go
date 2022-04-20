@@ -55,12 +55,14 @@ func (g *GameState) updateGameStatus(move Move) error {
 		status = X_WON
 	} else if playerWon && status == O_TURN {
 		status = O_WON
+		// } else if boardIsFull {
+		// status = TIE
 	} else if status == X_TURN {
 		status = O_TURN
 	} else if status == O_TURN {
 		status = X_TURN
 	} else {
-		return errors.New("incorrect game state for changing player!")
+		return errors.New("incorrect game state for changing player")
 	}
 	g.Status = status
 	return nil

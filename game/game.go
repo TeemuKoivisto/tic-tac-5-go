@@ -27,9 +27,8 @@ type Player struct {
 }
 
 type GameOptions struct {
-	Size         int
-	PlayerSymbol PlayerSymbol
-	GameType     GameType
+	Size     int
+	GameType GameType
 }
 
 type TicTacToe struct {

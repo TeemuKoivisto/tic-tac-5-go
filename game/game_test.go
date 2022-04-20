@@ -7,9 +7,8 @@ import (
 func TestAddingPlayers(t *testing.T) {
 	size := 25
 	game := New(GameOptions{
-		Size:         size,
-		PlayerSymbol: X,
-		GameType:     HOT_SEAT,
+		Size:     size,
+		GameType: HOT_SEAT,
 	})
 	var startErr, addErr error
 	startErr = game.StartGame()
@@ -43,9 +42,8 @@ func TestAddingPlayers(t *testing.T) {
 func TestNewGame(t *testing.T) {
 	size := 25
 	game := New(GameOptions{
-		Size:         size,
-		PlayerSymbol: X,
-		GameType:     HOT_SEAT,
+		Size:     size,
+		GameType: HOT_SEAT,
 	})
 	game.AddPlayer(HUMAN, User{ID: "1", name: "Player 1"})
 	game.AddPlayer(HUMAN, User{ID: "2", name: "Player 2"})

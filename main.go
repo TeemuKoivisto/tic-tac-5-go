@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/TeemuKoivisto/tic-tac-5-go/old_game"
+	"github.com/TeemuKoivisto/tic-tac-5-go/game"
 )
 
 func main() {
